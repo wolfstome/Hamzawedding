@@ -1,214 +1,278 @@
-// --- 1. AUDIO & WELCOME SCREEN ---
-const welcomeScreen = document.getElementById('welcome-screen');
-const enterBtn = document.getElementById('enter-btn');
-const bgAudio = document.getElementById('bg-audio');
-
-// Lock scroll initially to ensure the welcome screen is interactive first
-document.body.style.overflow = 'hidden';
-
-enterBtn.addEventListener('click', () => {
-    // Hide Welcome Screen
-    welcomeScreen.classList.add('hide-welcome');
-    
-    // Play Audio (User interaction allows this)
-    bgAudio.volume = 0.6; 
-    bgAudio.play().catch(error => console.log("Audio playback failed:", error));
-    
-    // Unlock Scroll
-    document.body.style.overflow = 'auto';
-});
-
-// ----------------------------------------------------------------------
-
-// --- 2. SCROLL ANIMATIONS ---
-const observerOptions = { threshold: 0.1 };
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            // Optional: stop observing once visible to save resources
-            // observer.unobserve(entry.target); 
-        }
-    });
-}, observerOptions);
-
-document.querySelectorAll('.slide-up').forEach(el => observer.observe(el));
-
-// ----------------------------------------------------------------------
-
-// --- 3. COUNTDOWN TIMER (Dec 4, 2025 11:00:00) ---
-const targetDate = new Date("Dec 20, 2025 12:00:00").getTime();
-const countdownGrid = document.getElementById('countdown');
-
-// Define time constants for clarity
-const SECOND = 1000;
-const MINUTE = SECOND * 60;
-const HOUR = MINUTE * 60;
-const DAY = HOUR * 24;
-
-function updateTimer() {
-    const now = new Date().getTime();
-    const diff = targetDate - now;
-
-    if (diff < 0) {
-        countdownGrid.innerHTML = '<div class="cd-box" style="width:100%; border-color:white;"><span class="cd-num">Mubarak!</span><span class="cd-label">Celebration Started</span></div>';
-        // Stop the interval once the event starts
-        clearInterval(timerInterval); 
-        return;
-    }
-
-    const days = Math.floor(diff / DAY);
-    const hours = Math.floor((diff % DAY) / HOUR);
-    const mins = Math.floor((diff % HOUR) / MINUTE);
-    const secs = Math.floor((diff % MINUTE) / SECOND);
-
-    countdownGrid.innerHTML = `
-        <div class="cd-box"><span class="cd-num">${days}</span><span class="cd-label">Days</span></div>
-        <div class="cd-box"><span class="cd-num">${hours}</span><span class="cd-label">Hrs</span></div>
-        <div class="cd-box"><span class="cd-num">${mins}</span><span class="cd-label">Min</span></div>
-        <div class="cd-box"><span class="cd-num">${secs}</span><span class="cd-label">Sec</span></div>
-    `;
-}
-
-// Store interval ID to stop it later
-const timerInterval = setInterval(updateTimer, SECOND); 
-updateTimer();
-
-// ----------------------------------------------------------------------
-
-// --- 4. WISHES SYSTEM ---
-const wishForm = document.getElementById('wish-form');
-const wishesFeed = document.getElementById('wishes-feed');
-
-// !!! IMPORTANT STEP TO REMOVE UNWANTED MESSAGES !!!
-// 1. Uncomment the line below.
-// 2. Save the file and refresh your website ONCE in your browser.
-// 3. Delete or comment out the line again. This clears ALL saved wishes.
-// localStorage.removeItem('sathiWishes'); 
-
-function addWishToDom(name, msg) {
-    const div = document.createElement('div');
-    div.className = 'wish-card slide-up visible';
-    div.innerHTML = `<p class="wish-text">"${msg}"</p><p class="wish-author">- ${name}</p>`;
-    // Add the new wish to the top
-    wishesFeed.prepend(div); 
-}
-
-// Load saved wishes
-let savedWishes = JSON.parse(localStorage.getItem('sathiWishes')) || [];
-
-// Function to render the list
-function renderWishes() {
-    wishesFeed.innerHTML = ''; // Clear current view
-    savedWishes.forEach(wish => addWishToDom(wish.name, wish.msg));
-}
-
-// Initial Render
-renderWishes();
-
-wishForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('user-name').value.trim();
-    const msg = document.getElementById('user-msg').value.trim();
-
-    if(name && msg) {
-        // Add new wish to DOM
-        addWishToDom(name, msg);
-        
-        // Add to storage array
-        savedWishes.unshift({ name, msg });
-        
-        // Save to Browser Memory
-        localStorage.setItem('sathiWishes', JSON.stringify(savedWishes));
-        
-        // Clear inputs
-        wishForm.reset();
-    }
-});
-// Start music when user taps anywhere
-document.addEventListener('click', function startMusic() {
-    const audio = document.getElementById("bgAudio");
-    audio.play();        // Play audio
-    document.removeEventListener('click', startMusic); // Remove listener after first tap
-});
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('wish-form');
+
+    // ======================================================================
+    // 1. AUDIO & WELCOME SCREEN (NO CHANGE)
+    // ======================================================================
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const enterBtn = document.getElementById('enter-btn');
+    const bgAudio = document.getElementById('bg-audio'); 
+
+    // Lock scroll initially
+    document.body.style.overflow = 'hidden';
+
+    if (enterBtn && welcomeScreen && bgAudio) {
+        enterBtn.addEventListener('click', () => {
+            // Hide Welcome Screen
+            welcomeScreen.classList.add('hide-welcome');
+            
+            // Play Audio
+            bgAudio.volume = 0.6; 
+            bgAudio.play().catch(error => console.log("Audio playback failed:", error));
+            
+            // Unlock Scroll
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    // ======================================================================
+    // 2. SCROLL ANIMATIONS (NO CHANGE)
+    // ======================================================================
+    const observerOptions = { threshold: 0.1 };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.slide-up').forEach(el => observer.observe(el));
+
+    // ======================================================================
+    // 3. COUNTDOWN TIMER (NO CHANGE)
+    // ======================================================================
+    const targetDate = new Date("Dec 20, 2025 12:00:00").getTime();
+    const countdownGrid = document.getElementById('countdown');
+
+    const SECOND = 1000;
+    const MINUTE = SECOND * 60;
+    const HOUR = MINUTE * 60;
+    const DAY = HOUR * 24;
+    let timerInterval;
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff < 0) {
+            if (countdownGrid) {
+                countdownGrid.innerHTML = '<div class="cd-box" style="width:100%; border-color:white;"><span class="cd-num">Mubarak!</span><span class="cd-label">Celebration Started</span></div>';
+            }
+            clearInterval(timerInterval); 
+            return;
+        }
+
+        const days = Math.floor(diff / DAY);
+        const hours = Math.floor((diff % DAY) / HOUR);
+        const mins = Math.floor((diff % HOUR) / MINUTE);
+        const secs = Math.floor((diff % MINUTE) / SECOND);
+
+        if (countdownGrid) {
+            countdownGrid.innerHTML = `
+                <div class="cd-box"><span class="cd-num">${days}</span><span class="cd-label">Days</span></div>
+                <div class="cd-box"><span class="cd-num">${hours}</span><span class="cd-label">Hrs</span></div>
+                <div class="cd-box"><span class="cd-num">${mins}</span><span class="cd-label">Min</span></div>
+                <div class="cd-box"><span class="cd-num">${secs}</span><span class="cd-label">Sec</span></div>
+            `;
+        }
+    }
+
+    if (countdownGrid) {
+        timerInterval = setInterval(updateTimer, SECOND); 
+        updateTimer();
+    }
     
-    // Check if the form element exists before adding the listener
-    if (!form) {
-        console.error("Form element with ID 'wish-form' not found. Please check your HTML.");
+    // ======================================================================
+    // 4. WISHES SYSTEM (FINAL VERSION)
+    // ======================================================================
+    
+    const wishForm = document.getElementById('wish-form');
+    const wishesFeed = document.getElementById('wishes-feed');
+
+    // Local Storage Functions
+    let savedWishes = JSON.parse(localStorage.getItem('sathiWishes')) || [];
+    
+    savedWishes = savedWishes.map(wish => ({
+        ...wish,
+        replies: wish.replies || [] 
+    }));
+
+    function saveWishes() {
+        localStorage.setItem('sathiWishes', JSON.stringify(savedWishes));
+    }
+
+    // Function to render all wishes and replies to the HTML
+    function renderWishes() {
+        if (!wishesFeed) return;
+        wishesFeed.innerHTML = ''; // Clear current view
+
+        if (savedWishes.length === 0) {
+            wishesFeed.innerHTML = '<p class="no-wishes" style="text-align:center; color:#777; padding-top: 10px;">Be the first to send a wish!</p>';
+        }
+
+        savedWishes.forEach((wish, index) => {
+            const hasReplies = wish.replies && wish.replies.length > 0;
+            const wishCard = document.createElement('div');
+            wishCard.className = 'wish-card slide-up visible'; 
+            wishCard.setAttribute('data-index', index);
+
+            // 1. Main Wish Content and Actions (ONLY Delete/Reply)
+            let htmlContent = `
+                <div class="wish-main">
+                    <p class="wish-text">"${wish.msg}"</p>
+                    <p class="wish-author">- ${wish.name}</p>
+                    <div class="wish-actions">
+                        <button class="delete-btn" data-index="${index}">🗑️ Delete</button>
+                        <button class="reply-btn" data-index="${index}">💬 Reply</button>
+                    </div>
+                </div>
+            `;
+            
+            // 2. Replies Section Container
+            htmlContent += `
+                <div class="replies-section" id="replies-${index}">
+            `;
+            
+            // Render Replies Heading and Items (only if replies exist)
+            if (hasReplies) {
+                htmlContent += `<h4>Replies:</h4>`;
+                
+                // Render Replies
+                wish.replies.forEach(reply => {
+                    const safeName = reply.name.replace(/</g, "<").replace(/>/g, ">");
+                    const safeMsg = reply.message.replace(/</g, "<").replace(/>/g, ">");
+                    htmlContent += `<p class="reply-item"><strong>${safeName}:</strong> ${safeMsg}</p>`;
+                });
+            }
+            
+            // Append the Reply Form structure (which is hidden by default via CSS)
+            htmlContent += `
+                    <form class="reply-form" data-index="${index}">
+                        <input type="text" placeholder="Your Name" required>
+                        <input type="text" placeholder="Your Reply" required>
+                        <button type="submit">Post Reply</button>
+                    </form>
+                </div>
+            `;
+            
+            wishCard.innerHTML = htmlContent;
+            wishesFeed.prepend(wishCard);
+            
+            // Hide the entire replies section if there are no replies.
+            const repliesSection = wishCard.querySelector(`#replies-${index}`);
+            if (!hasReplies) {
+                repliesSection.style.display = 'none'; 
+            }
+        });
+
+        // Re-attach all necessary event listeners after rendering
+        addWishesEventListeners();
+    }
+
+    function addWishesEventListeners() {
+        // Delete Listener
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.onclick = (e) => deleteWish(parseInt(e.target.dataset.index));
+        });
+
+        // REPLY TOGGLE Listener
+        document.querySelectorAll('.reply-btn').forEach(button => {
+            button.onclick = (e) => {
+                const index = parseInt(e.target.dataset.index);
+                const repliesSection = document.getElementById(`replies-${index}`);
+                
+                const form = repliesSection ? repliesSection.querySelector('.reply-form') : null;
+                
+                if (form && repliesSection) {
+                    const formIsVisible = form.style.display === 'flex';
+
+                    if (formIsVisible) {
+                        // Action: CLOSE THE REPLY FORM
+                        form.style.display = 'none';
+                        button.textContent = '💬 Reply'; 
+                        
+                        const hasReplies = savedWishes[index].replies && savedWishes[index].replies.length > 0;
+                        if (!hasReplies) {
+                            repliesSection.style.display = 'none'; // Hide the container if no replies exist
+                        }
+                    } else {
+                        // Action: OPEN THE REPLY FORM
+                        repliesSection.style.display = 'block'; // Show the container
+                        form.style.display = 'flex';           // Show the form fields
+                        button.textContent = '❌ Cancel Reply';
+                    }
+                }
+            };
+        });
+
+        // Reply Form Submission Listeners 
+        document.querySelectorAll('.reply-form').forEach(form => {
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const index = parseInt(e.target.dataset.index);
+                const replyName = e.target.querySelector('input:nth-child(1)').value.trim();
+                const replyMsg = e.target.querySelector('input:nth-child(2)').value.trim();
+                
+                if (replyName && replyMsg) {
+                    addReply(index, replyName, replyMsg);
+                    e.target.reset();
+                }
+            };
+        });
+    }
+
+    // Function to delete a wish
+    function deleteWish(index) {
+        if (confirm("Are you sure you want to delete your wish? This is irreversible.")) {
+            savedWishes.splice(index, 1);
+            saveWishes();
+            renderWishes(); 
+        }
+    }
+
+    // Function to add a reply to a wish
+    function addReply(index, name, message) {
+        if (!savedWishes[index].replies) {
+            savedWishes[index].replies = [];
+        }
+        savedWishes[index].replies.push({ name, message, timestamp: new Date().toISOString() });
+        
+        saveWishes();
+        renderWishes(); 
+    }
+
+    // --- MAIN WISH SUBMISSION LISTENER ---
+
+    if (!wishForm) {
+        console.error("Form element with ID 'wish-form' not found.");
         return;
     }
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Stop the form from submitting normally (prevent page refresh)
+    wishForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-        // 1. Get the values from the form inputs
         const nameInput = document.getElementById('user-name');
         const messageInput = document.getElementById('user-msg');
         
-        // Basic input validation
-        if (!nameInput || !messageInput) {
-            console.error("Missing input elements (user-name or user-msg).");
-            return;
-        }
+        if (!nameInput || !messageInput) return;
 
-        const name = nameInput.value;
-        const message = messageInput.value;
+        const name = nameInput.value.trim();
+        const message = messageInput.value.trim();
 
-        // 2. WhatsApp configuration
-        // IMPORTANT: Use the number *without* the leading '+' or zeros (e.g., 923022277443)
-        const targetNumber = '923022277443'; 
-        const waBaseURL = 'https://wa.me/';
+        if (!name || !message) return;
 
-        // 3. Prepare the full text message
-        const fullText = `Name: ${name}\nMessage: ${message}`;
-
-        // 4. Encode the message text for use in a URL
-        const encodedMessage = encodeURIComponent(fullText);
-
-        // 5. Construct the full WhatsApp chat link
-        const waLink = `${waBaseURL}${targetNumber}?text=${encodedMessage}`;
-
-
-        // --- Beautiful Modal Logic ---
+        // 1. SAVE THE NEW WISH (Local Storage)
         
-        const modal = document.getElementById('custom-alert-modal');
-        const closeBtn = document.querySelector('.close-button'); // Assumes .close-button exists inside the modal
-        const confirmBtn = document.getElementById('modal-confirm-button');
+        const newWish = { name, msg: message, replies: [] };
+        savedWishes.unshift(newWish);
+        saveWishes(); 
         
-        // Check if the custom modal elements are present
-        if (!modal || !closeBtn || !confirmBtn) {
-            console.warn("Custom modal structure not found. Redirecting immediately.");
-            window.location.href = waLink;
-            document.getElementById('wish-form').reset();
-            return;
-        }
-
-        // Function to hide the modal and redirect to WhatsApp
-        const hideModalAndRedirect = () => {
-            modal.style.display = 'none';
-            
-            // 6. Redirect the user
-            window.location.href = waLink;
-            
-            // Clear the form
-            document.getElementById('wish-form').reset();
-        };
-
-        // Display the custom modal
-        modal.style.display = 'block';
-
-        // Set up event handlers for the custom modal buttons
-        confirmBtn.onclick = hideModalAndRedirect;
-        closeBtn.onclick = hideModalAndRedirect;
-
-        // Close and redirect if user clicks on the gray background (outside modal content)
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                hideModalAndRedirect();
-            }
-        }
+        // 2. Clear form and refresh display
+        wishForm.reset();
+        renderWishes(); 
     });
+
+    // Initial Render
+    renderWishes();
 });
