@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Control Example</title>
+    <style>
+        /* CSS to hide the audio element itself */
+        #bgMusic {
+            display: none;
+        }
+
+        /* Basic styling for the button */
+        #audioToggleButton {
+            position: fixed; /* Keep it visible even when scrolling */
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            z-index: 1000; /* Ensure it's above other content */
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome! Click the button in the corner to toggle music.</h1>
+    <p>Scroll down to see the button stays fixed.</p>
+    <audio id="bgMusic" loop>
+        <source src="assest/055 (1).mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="audioToggleButton">Play Music 🔊</button>
+
+    <script>
+        // Get the elements
+        const audio = document.getElementById("bgMusic");
+        const button = document.getElementById("audioToggleButton");
+
+        // Set initial state (assuming music is off until the user clicks)
+        let isPlaying = false;
+
+        // Function to handle the button click
+        function toggleAudio() {
+            if (isPlaying) {
+                // If currently playing, pause it
+                audio.pause();
+                button.textContent = "Play Music 🔊";
+                isPlaying = false;
+            } else {
+                // If currently paused, attempt to play it
+                // Using .play().catch is important to handle the browser Autoplay Policy
+                audio.play()
+                    .then(() => {
+                        button.textContent = "Mute Music 🔇";
+                        isPlaying = true;
+                    })
+                    .catch(error => {
+                        // This usually happens if the user hasn't interacted with the page yet.
+                        console.error("Audio playback failed:", error);
+                        alert("Please try interacting with the page first before playing audio.");
+                        // Keep the button label as "Play" since it failed
+                        button.textContent = "Play Music 🔊";
+                        isPlaying = false;
+                    });
+            }
+        }
+
+        // Attach the function to the button click event
+        button.addEventListener('click', toggleAudio);
+    </script>
+
+</body>
+</html>
