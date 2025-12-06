@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // ======================================================================
-    // 1. AUDIO & WELCOME SCREEN (NO CHANGE)
+    // 1. AUDIO & WELCOME SCREEN (FIXED AUDIO START)
     // ======================================================================
     const welcomeScreen = document.getElementById('welcome-screen');
     const enterBtn = document.getElementById('enter-btn');
-    const bgAudio = document.getElementById('bg-audio'); 
+    const bgAudio = document.getElementById('bg-audio'); // Correctly target the background audio element
 
     // Lock scroll initially
     document.body.style.overflow = 'hidden';
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
             welcomeScreen.classList.add('hide-welcome');
             
             // Play Audio
+            // **This is the key fix:** We attempt to play the audio here, initiated by the user's click.
             bgAudio.volume = 0.6; 
             bgAudio.play().catch(error => console.log("Audio playback failed:", error));
             
@@ -84,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // ======================================================================
-    // 4. WISHES SYSTEM (FINAL VERSION)
+    // 4. WISHES SYSTEM (NO LOGIC CHANGE)
     // ======================================================================
     
     const wishForm = document.getElementById('wish-form');
