@@ -132,60 +132,83 @@ document.addEventListener('click', function startMusic() {
     audio.play();        // Play audio
     document.removeEventListener('click', startMusic); // Remove listener after first tap
 });
-
-// WHat app redirect 
-document.getElementById('wish-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevents the page from refreshing on submit
-
-    // 1. Get the values from the form inputs
-    const name = document.getElementById('user-name').value;
-    const message = document.getElementById('user-msg').value;
-
-    // 2. Define the WhatsApp number and the base URL
-    const targetNumber = '923022277443'; 
-    const waBaseURL = 'https://wa.me/';
-
-    // 3. Prepare the full text message, including the name
-    const fullText = `Name: ${name}\nMessage: ${message}`;
-
-    // 4. Encode the message text for use in a URL
-    const encodedMessage = encodeURIComponent(fullText);
-
-    // 5. Construct the full WhatsApp chat link
-    const waLink = `${waBaseURL}${targetNumber}?text=${encodedMessage}`;
-
-
-    // --- Custom Modal Logic Starts Here ---
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('wish-form');
     
-    // Get the elements for the custom modal
-    const modal = document.getElementById('custom-alert-modal');
-    const closeBtn = document.querySelector('.close-button');
-    const confirmBtn = document.getElementById('modal-confirm-button');
-    
-    // Function to hide the modal and redirect
-    const hideModalAndRedirect = () => {
-        modal.style.display = 'none';
-        
-        // 6. Redirect the user to the WhatsApp link
-        window.location.href = waLink;
-        
-        // Optional: Clear the form after redirection
-        document.getElementById('wish-form').reset();
-    };
-
-    // Display the custom modal
-    modal.style.display = 'block';
-
-    // When the user clicks OK, close the modal and redirect
-    confirmBtn.onclick = hideModalAndRedirect;
-
-    // When the user clicks the X, close the modal and redirect
-    closeBtn.onclick = hideModalAndRedirect;
-
-    // When the user clicks anywhere outside of the modal, close it and redirect
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            hideModalAndRedirect();
-        }
+    // Check if the form element exists before adding the listener
+    if (!form) {
+        console.error("Form element with ID 'wish-form' not found. Please check your HTML.");
+        return;
     }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop the form from submitting normally (prevent page refresh)
+
+        // 1. Get the values from the form inputs
+        const nameInput = document.getElementById('user-name');
+        const messageInput = document.getElementById('user-msg');
+        
+        // Basic input validation
+        if (!nameInput || !messageInput) {
+            console.error("Missing input elements (user-name or user-msg).");
+            return;
+        }
+
+        const name = nameInput.value;
+        const message = messageInput.value;
+
+        // 2. WhatsApp configuration
+        // IMPORTANT: Use the number *without* the leading '+' or zeros (e.g., 923022277443)
+        const targetNumber = '923022277443'; 
+        const waBaseURL = 'https://wa.me/';
+
+        // 3. Prepare the full text message
+        const fullText = `Name: ${name}\nMessage: ${message}`;
+
+        // 4. Encode the message text for use in a URL
+        const encodedMessage = encodeURIComponent(fullText);
+
+        // 5. Construct the full WhatsApp chat link
+        const waLink = `${waBaseURL}${targetNumber}?text=${encodedMessage}`;
+
+
+        // --- Beautiful Modal Logic ---
+        
+        const modal = document.getElementById('custom-alert-modal');
+        const closeBtn = document.querySelector('.close-button'); // Assumes .close-button exists inside the modal
+        const confirmBtn = document.getElementById('modal-confirm-button');
+        
+        // Check if the custom modal elements are present
+        if (!modal || !closeBtn || !confirmBtn) {
+            console.warn("Custom modal structure not found. Redirecting immediately.");
+            window.location.href = waLink;
+            document.getElementById('wish-form').reset();
+            return;
+        }
+
+        // Function to hide the modal and redirect to WhatsApp
+        const hideModalAndRedirect = () => {
+            modal.style.display = 'none';
+            
+            // 6. Redirect the user
+            window.location.href = waLink;
+            
+            // Clear the form
+            document.getElementById('wish-form').reset();
+        };
+
+        // Display the custom modal
+        modal.style.display = 'block';
+
+        // Set up event handlers for the custom modal buttons
+        confirmBtn.onclick = hideModalAndRedirect;
+        closeBtn.onclick = hideModalAndRedirect;
+
+        // Close and redirect if user clicks on the gray background (outside modal content)
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                hideModalAndRedirect();
+            }
+        }
+    });
 });
