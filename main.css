@@ -150,7 +150,25 @@ body { background-color: var(--cream); font-family: var(--font-body); color: #33
     width: 100%; padding: 15px; margin-bottom: 15px;
     border: 1px solid #ccc; border-radius: 8px; font-family: inherit;
 }
-.wishes-feed { margin-top: 30px; }
+
+/* === NEW SCROLLABLE WISH BOX STYLES === */
+.scrollable-wish-wrapper {
+    /* Set a fixed height for the scrollable area */
+    max-height: 500px; /* Adjust this height as needed */
+    height: 500px;
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    margin-top: 30px; 
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fcfcfc;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.wishes-feed { 
+    margin-top: 0; /* Override default margin from script */
+}
+
 .wish-card {
     background: white; padding: 20px; border-left: 4px solid var(--emerald);
     margin-bottom: 15px; text-align: left; box-shadow: 0 3px 10px rgba(0,0,0,0.05);
@@ -166,6 +184,97 @@ footer { background: var(--emerald-dark); color: #ccc; padding: 40px 20px; text-
     .welcome-content h1 { font-size: 3rem; }
     .cd-box { min-width: 60px; padding: 5px; }
     .cd-num { font-size: 1.2rem; }
-
+    .scrollable-wish-wrapper { 
+        max-height: 400px; 
+        height: 400px; 
+    }
 }
 
+/* === INTERACTIVITY STYLING (Wishes & Reply) === */
+
+.wish-main {
+    margin-bottom: 10px;
+}
+
+.wish-actions {
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+.wish-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9em;
+    margin-left: 10px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.delete-btn { color: #dc3545; }
+.reply-btn { color: var(--emerald); }
+
+.delete-btn:hover { background-color: #f8d7da; }
+.reply-btn:hover { background-color: #f0f8ff; }
+
+
+/* Replies Section Styling */
+.replies-section {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    border-left: 3px solid var(--gold);
+    text-align: left;
+}
+
+.replies-section h4 { 
+    font-size: 0.9em; 
+    margin-top: 0; 
+    margin-bottom: 5px; 
+    color: var(--emerald-dark); 
+    text-transform: uppercase;
+}
+
+.reply-item { 
+    font-size: 0.9em; 
+    margin: 5px 0; 
+    padding-left: 10px;
+}
+
+.reply-form {
+    display: none; /* Hidden by default via CSS */
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.reply-form input {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+.reply-form input:nth-child(1) { /* Name */
+    width: 30%;
+    min-width: 100px;
+}
+
+.reply-form input:nth-child(2) { /* Message */
+    flex-grow: 1;
+    min-width: 150px;
+}
+
+.reply-form button {
+    background-color: var(--gold);
+    color: var(--emerald-dark);
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+}
