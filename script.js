@@ -131,46 +131,35 @@ document.addEventListener('click', function startMusic() {
     const audio = document.getElementById("bgAudio");
     audio.play();        // Play audio
     document.removeEventListener('click', startMusic); // Remove listener after first tap
-});
-// What app number submit 
-document.getElementById('wish-form').addEventListener('submit', function(event) {
+});document.getElementById('wish-form').addEventListener('submit', function(event) {
     event.preventDefault(); // Prevents the page from refreshing on submit
 
     // 1. Get the values from the form inputs
     const name = document.getElementById('user-name').value;
     const message = document.getElementById('user-msg').value;
 
-    // 2. Prepare the data to send to your server
-    const payload = {
-        senderName: name,
-        fullMessage: message,
-        // FIX: The number MUST be a string (enclosed in quotes)
-        targetNumber: "+923022277443" 
-    };
+    // 2. Define the WhatsApp number and the base URL
+    // The number must be in international format (e.g., +923022277443 becomes 923022277443)
+    const targetNumber = '923022277443'; 
+    const waBaseURL = 'https://wa.me/';
 
-    // 3. Send the data to your server-side script
-    fetch('/api/send-whatsapp-message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-    })
-    .then(response => {
-        // Check if the server responded with an error status (4xx or 5xx)
-        if (!response.ok) {
-            // Throw an error to be caught by the .catch() block
-            throw new Error(`Server responded with status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert("Message sent successfully!");
-        document.getElementById('wish-form').reset(); // Clear the form
-    })
-    .catch((error) => {
-        // This block catches network errors, syntax errors, and server errors (due to the check above)
-        console.error('Error sending data:', error);
-        alert("Failed to send message. Please check the console for details.");
-    });
+    // 3. Prepare the full text message, including the name
+    const fullText = `Name: ${name}\nMessage: ${message}`;
+
+    // 4. Encode the message text for use in a URL (very important for special characters)
+    const encodedMessage = encodeURIComponent(fullText);
+
+    // 5. Construct the full WhatsApp chat link
+    // Format: https://wa.me/NUMBER?text=URL_ENCODED_MESSAGE
+    const waLink = `${waBaseURL}${targetNumber}?text=${encodedMessage}`;
+
+    // 6. Redirect the user to the WhatsApp link
+    // This will open WhatsApp (or the web interface) and pre-fill the message
+    window.location.href = waLink;
+    
+    // Optional: Alert the user that they are being redirected
+    alert("Redirecting to WhatsApp to send the message...");
+    
+    // Optional: Clear the form after redirection
+    document.getElementById('wish-form').reset(); 
 });
